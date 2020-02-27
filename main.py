@@ -1,165 +1,61 @@
-Задача 1
-Вывести на экран циклом пять строк из нулей, причем каждая строка должна быть пронумерована.
-'''
-print()
-print('Задача 1')
-print()
+# Открыть текст
 
-i  = 0
-for i in range(1, 6):
-    print(i, 0)
-    i += 1
+f = open('text.txt', 'r', encoding = 'utf-8')
+text = f.read()
+print(text)
+f.close()
 
-'''
-Задача 2
-Пользователь в цикле вводит 10 цифр. Найти количество введеных пользователем цифр 5.
-'''
-print()
-print('Задача 2')
-print()
+# №1 Методами строк очистить текст от знаков препинания.
+# # Используемые в тексте знаки препинания: "«", "!", ".", ",", "—", "-", ";", "?", "»", "(", ")".
 
-i = 0
-count = 0
-for i in range(1, 11):
-    print('№', i)
-    num = 100
-    while num/10 > 1:
-        num = int(input('Введите одну цифру: '))
-    if num == 5:
-        count += 1
-print('Цифру 5 Вы ввели', count, 'раз.')
-'''
-Задача 3
-Найти сумму ряда чисел от 1 до 100. Полученный результат вывести на экран.
-'''
-print()
-print('Задача 3')
-print()
-sum = 0
+# 1 вариант, убирать по одному знаку:
+textWithoutPunct = text.replace("«", " ")
+print(textWithoutPunct)
+textWithoutPunct = text.replace("!", " ")
+print(textWithoutPunct)
+# и т.п.
+# 2 вариант, быстрый:
+punct = "«!.,—;?»-()"
+print(punct)
+for i in punct:
+    text = text.replace(i, " ")
+print(text)
 
-for i in range(1, 101):
-     sum += i
-print(sum)
+# №2 Cформировать list со словами
+text_list = text.split()
+print(text_list)
 
-'''
-Задача 4
-Найти произведение ряда чисел от 1 до 10. Полученный результат вывести на экран.
-'''
-print()
-print('Задача 4')
-print()
+# №3  Привести все слова к нижнему регистру
 
-prod = 1
-for i in range(1, 11):
-    prod *= i
-print(prod)
+text_list_map = list(map(lambda x:x.lower(), text_list))
+print(text_list_map)
 
-'''
-Задача 5
-Вывести цифры числа на каждой строчке.
-'''
-print()
-print('Задача 5')
-print()
+# №3 Получить из list пункта 3 dict, ключами которого являются слова, а значениями их количество появлений в тексте
 
-# integer_number = 2129
-#
-# while integer_number > 0:
-#     a = []
-#     integer_number % 10 = list.append(a)
-#     integer_number = integer_number//10
+text_dict = {}
+for word in text_list_map:
+    count = text_dict.get(word, 0)
+    text_dict[word] = count + 1
+print(text_dict)
 
-# выводит, начиная с первой цифры
-integer_number = 2129
-a = []
+# №4  Вывести 5 наиболее часто встречающихся слов (sort), вывести количество разных слов в тексте (set)
+# № 4.1
 
-while integer_number > 0:
-    a.append(integer_number % 10)
-    integer_number = integer_number//10
-a.reverse()
-for i in range(len(a)):
-    print(a[i])
+text_dict_list = list(text_dict.items())
+text_dict_list.sort(key=lambda x: x[1], reverse=True)
+print(text_dict_list [:5])
 
+# №4.2
 
-'''
-Задача 6
-Найти сумму цифр числа.
-'''
-print()
-print('Задача 6')
-print()
+print(set(text_list_map), len(set(text_list_map)))
 
-num = int(input('Введите число: '))
-sum = 0
+# № 5 Выполнить лемматизацию в пункте №2
+# Из №3 взята переменная, включающая текст, состоящий из слов, отображенных нижним регистром
 
-while num > 0:
-    sum += num % 10
-    num = num//10
-print(sum)
+import pymorphy2
+morph = pymorphy2.MorphAnalyzer()
 
-'''
-Задача 7
-Найти произведение цифр числа.
-'''
-print()
-print('Задача 7')
-print()
-
-num = int(input('Введите число: '))
-prod = 1
-
-while num > 0:
-    prod *= num%10
-    num = num//10
-print(prod)
-
-
-
-'''
-Задача 8
-Дать ответ на вопрос: есть ли среди цифр числа 5?
-'''
-print()
-print('Задача 8')
-print()
-
-integer_number = 213413
-while integer_number>0:
-    if integer_number%10 == 5:
-        print('Yes')
-        break
-    integer_number = integer_number//10
-else: print('No')
-
-'''
-Задача 9
-Найти максимальную цифру в числе
-'''
-print()
-print('Задача 9')
-print()
-max = 0
-num = int(input('Введите число: '))
-while num > 0:
-    if num%10 >= max:
-        max = num % 10
-    num = num//10
-print(max)
-
-
-'''
-Задача 10
-Найти количество цифр 5 в числе
-'''
-
-print()
-print('Задача 10')
-print()
-
-num = int(input('Введите число: '))
-sum_of_5 = 0
-while num > 0:
-    if num%10 == 5:
-        sum_of_5 +=1
-    num = num//10
-print('Количество цифр 5 в числе:', sum_of_5)
+text_lem = []
+for i in text_list_map:
+    text_lem.append(morph.parse(i)[0].normal_form)
+print(text_lem)
